@@ -12,8 +12,7 @@
     "stop": "pm2 stop Mercedes",
     "restart": "pm2 restart Mercedes"
   },
-  "dependencies": {
-    
+  "dependencies": }
   "@whiskeysockets/baileys": "github:Davex-254/davebaileys",
      "axios": "^1.7.9",
     "@adiwajshing/keyed-db": "latest",
