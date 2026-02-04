@@ -5,9 +5,8 @@ const os = require('os');
 const { runtime } = require('../lib/functions');
 
 const botStartTime = Date.now();
-const ALIVE_IMG = config.ALIVE_IMAGE || 'https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg';
+const ALIVE_IMG = 'https://files.catbox.moe/6wfq18.jpg';
 const NEWSLETTER_JID = config.NEWSLETTER_JID || '120363299029326322@newsletter';
-const AUDIO_URL = config.AUDIO_URL || 'https://files.catbox.moe/pjlpd7.mp3';
 
 // Tiny caps mapping for lowercase letters
 const tinyCapsMap = {
@@ -38,12 +37,12 @@ malvin({
     const totalRam = (os.totalmem() / 1024 / 1024).toFixed(2);
 
     const caption = `
-*┏─〔${pushname}〕─⊷*
+*┏──────────────⊷*
 *┇ ᴜᴘᴛɪᴍᴇ: ${uptime}*
 *┇ ʙᴏᴛ ɴᴀᴍᴇ: ${config.BOT_NAME}*
 *┇ ᴏᴡɴᴇʀ: ${config.OWNER_NAME}*
 *┗──────────────⊷*
-> ᴍᴀᴅᴇ ʙʏ ᴍᴀʀɪsᴇʟ
+> ᴍᴀᴅᴇ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs
 `.trim();
 
     const buttons = [
@@ -57,7 +56,7 @@ malvin({
             title: "ᴄʟɪᴄᴋ ʜᴇʀᴇ",
             sections: [
               {
-                title: "ᴍᴇʀᴄᴇᴅᴇs",
+                title: "ᴄᴀsᴇʏʀʜᴏᴅᴇs🎀",
                 highlight_label: "",
                 rows: [
                   {
@@ -105,20 +104,11 @@ malvin({
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: NEWSLETTER_JID,
-          newsletterName: toTinyCaps('𝖒𝖆𝖗𝖎𝖘𝖊𝖑'),
+          newsletterName: toTinyCaps('Caseyrhodes'),
           serverMessageId: 143,
         },
       },
     }, { quoted: mek });
-
-    // Send audio if configured
-    if (AUDIO_URL) {
-      await malvin.sendMessage(from, {
-        audio: { url: AUDIO_URL },
-        mimetype: 'audio/mp4',
-        ptt: true,
-      }, { quoted: mek });
-    }
 
   } catch (error) {
     console.error('❌ Error in alive command:', error.message);
