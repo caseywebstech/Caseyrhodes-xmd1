@@ -13,7 +13,7 @@
     "restart": "pm2 restart Mercedes"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "github:EdderBot02/bail",
+  "@whiskeysockets/baileys": "npm:xmd-baileys@latest",
      "axios": "^1.7.9",
     "@adiwajshing/keyed-db": "latest",
     "@dark-yasiya/yt-dl.js": "1.0.5",
