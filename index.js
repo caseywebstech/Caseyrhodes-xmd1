@@ -279,14 +279,73 @@ async function connectToWA() {
       // Load plugins
       const pluginPath = path.join(__dirname, "plugins");
       try {
-        fsSync.readdirSync(pluginPath).forEach((plugin) => {
-          if (path.extname(plugin).toLowerCase() === ".js") {
-            require(path.join(pluginPath, plugin));
+        console.log(chalk.cyan("[ 🔧 ] Loading plugins..."));
+        
+        // First, load malvin.js to initialize command registry
+        try {
+          const malvinModule = require('./malvin');
+          console.log(chalk.green(`[ ✅ ] Command registry loaded: ${malvinModule.commands ? malvinModule.commands.length : 0} commands`));
+          
+          // List all commands
+          if (malvinModule.commands && malvinModule.commands.length > 0) {
+            console.log(chalk.cyan("[ 📋 ] Available commands:"));
+            malvinModule.commands.forEach((cmd, i) => {
+              console.log(chalk.cyan(`  ${i+1}. ${cmd.pattern} - ${cmd.desc || 'No description'}`));
+            });
           }
-        });
-        console.log(chalk.green("[ ✅ ] Plugins loaded successfully"));
+        } catch (malvinErr) {
+          console.error(chalk.red("[ ❌ ] Error loading malvin.js:", malvinErr.message));
+          console.error(chalk.red("[ ❌ ] Commands will not work without malvin.js"));
+        }
+        
+        // Load plugins
+        const plugins = fsSync.readdirSync(pluginPath);
+        let loadedCount = 0;
+        let errorCount = 0;
+        
+        for (const plugin of plugins) {
+          if (path.extname(plugin).toLowerCase() === ".js") {
+            const pluginName = path.basename(plugin, '.js');
+            
+            // Skip problematic plugins
+            if (pluginName === 'Createapi') {
+              console.log(chalk.yellow(`[ ⚠️ ] Skipping problematic plugin: ${plugin}`));
+              continue;
+            }
+            
+            try {
+              const pluginPathFull = path.join(pluginPath, plugin);
+              console.log(chalk.cyan(`[ ⏳ ] Loading plugin: ${pluginName}`));
+              
+              // Clear require cache to ensure fresh load
+              delete require.cache[require.resolve(pluginPathFull)];
+              
+              require(pluginPathFull);
+              loadedCount++;
+              console.log(chalk.green(`[ ✅ ] Loaded plugin: ${pluginName}`));
+            } catch (err) {
+              errorCount++;
+              console.error(chalk.red(`[ ❌ ] Error loading plugin ${pluginName}:`, err.message));
+              // Don't stop on plugin errors
+            }
+          }
+        }
+        
+        // Final status
+        console.log(chalk.green(`[ 📊 ] Plugins loaded: ${loadedCount} successful, ${errorCount} failed`));
+        
+        // Reload malvin.js to get updated commands from plugins
+        try {
+          delete require.cache[require.resolve('./malvin')];
+          const malvinModule = require('./malvin');
+          console.log(chalk.green(`[ 📊 ] Total commands after plugins: ${malvinModule.commands ? malvinModule.commands.length : 0}`));
+        } catch (err) {
+          console.error(chalk.red("[ ❌ ] Failed to reload command registry"));
+        }
+        
       } catch (err) {
         console.error(chalk.red("[ ❌ ] Error loading plugins:", err.message));
+        console.error(chalk.red("[ ❌ ] Some features may not work"));
       }
 
       // Send connection message
@@ -551,8 +610,38 @@ BotActivityFilter(malvin);
  /// READ STATUS       
   malvin.ev.on('messages.upsert', async(mek) => {
     try {
+      // DEBUG: Log message receipt
+      console.log(chalk.cyan('='.repeat(60)));
+      console.log(chalk.green('[MSG] New message received'));
+      
       mek = mek.messages[0];
-      if (!mek.message) return;
+      if (!mek.message) {
+        console.log(chalk.yellow('[MSG] No message content'));
+        return;
+      }
+      
+      // Get message type and body
+      const type = getContentType(mek.message);
+      let body = '';
+      
+      if (type === 'conversation') {
+        body = mek.message.conversation || '';
+      } else if (type === 'extendedTextMessage') {
+        body = mek.message.extendedTextMessage?.text || '';
+      } else if (type === 'imageMessage') {
+        body = mek.message.imageMessage?.caption || '';
+      } else if (type === 'videoMessage') {
+        body = mek.message.videoMessage?.caption || '';
+      }
+      
+      console.log(chalk.cyan(`[MSG] From: ${mek.key.remoteJid}`));
+      console.log(chalk.cyan(`[MSG] Type: ${type}`));
+      console.log(chalk.cyan(`[MSG] Body: "${body}"`));
+      
+      const prefix = getPrefix();
+      console.log(chalk.cyan(`[MSG] Prefix: "${prefix}"`));
+      const isCmd = body?.startsWith(prefix) || false;
+      console.log(chalk.cyan(`[MSG] Is command? ${isCmd}`));
       
       mek.message = (getContentType(mek.message) === 'ephemeralMessage') 
         ? mek.message.ephemeralMessage.message 
@@ -648,21 +737,9 @@ BotActivityFilter(malvin);
       }
       
       const m = sms(malvin, mek);
-      const type = getContentType(mek.message);
       const content = JSON.stringify(mek.message);
       const from = mek.key.remoteJid;
       const quoted = type == 'extendedTextMessage' && mek.message.extendedTextMessage?.contextInfo != null ? mek.message.extendedTextMessage.contextInfo.quotedMessage || [] : [];
-      const body = (type === 'conversation') ? mek.message.conversation : 
-                   (type === 'extendedTextMessage') ? mek.message.extendedTextMessage.text : 
-                   (type == 'imageMessage') && mek.message.imageMessage?.caption ? mek.message.imageMessage.caption : 
-                   (type == 'videoMessage') && mek.message.videoMessage?.caption ? mek.message.videoMessage.caption : '';
-      const prefix = getPrefix();
-      const isCmd = body?.startsWith(prefix) || false;
-      var budy = typeof mek.text == 'string' ? mek.text : false;
-      const command = isCmd ? body.slice(prefix.length).trim().split(' ').shift().toLowerCase() : '';
-      const args = body?.trim().split(/ +/).slice(1) || [];
-      const q = args.join(' ');
-      const text = args.join(' ');
       const isGroup = from?.endsWith('@g.us') || false;
       const sender = mek.key.fromMe ? (malvin.user.id.split(':')[0]+'@s.whatsapp.net' || malvin.user.id) : (mek.key.participant || mek.key.remoteJid);
       const senderNumber = sender?.split('@')[0] || '';
@@ -694,8 +771,8 @@ BotActivityFilter(malvin);
       ].map((num) => num.replace(/[^0-9]/g, "") + "@s.whatsapp.net");
       const isCreator = creatorJids.includes(sender) || isMe;
 
-      if (isCreator && mek.text?.startsWith("&")) {
-        let code = budy.slice(2);
+      if (isCreator && body?.startsWith("&")) {
+        let code = body.slice(2);
         if (!code) {
           reply(`Provide me with a query to run Master!`);
           console.warn(`No code provided for & command`, { Sender: sender });
@@ -829,53 +906,99 @@ BotActivityFilter(malvin);
         console.error("Error checking owner/mode:", err.message);
       }
 	  
-	  // take commands 
-      try {
-        const events = require('./malvin');
-        const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false;
-        if (isCmd) {
-          const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName));
+	  // ====== COMMAND HANDLER ======
+      if (isCmd && body) {
+        try {
+          // Extract command name
+          const cmdName = body.slice(prefix.length).trim().split(" ")[0].toLowerCase();
+          const args = body.slice(prefix.length + cmdName.length).trim();
+          
+          console.log(chalk.magenta(`[CMD] Received: ${cmdName} from ${sender}`));
+          console.log(chalk.magenta(`[CMD] Args: "${args}"`));
+          
+          // Load command registry
+          const malvinModule = require('./malvin');
+          
+          if (!malvinModule.commands || malvinModule.commands.length === 0) {
+            console.log(chalk.red('[CMD] No commands available'));
+            await malvin.sendMessage(from, { 
+              text: '❌ No commands are available. Check bot logs.' 
+            }, { quoted: mek });
+            return;
+          }
+          
+          // Find the command
+          const cmd = malvinModule.commands.find(c => 
+            c.pattern === cmdName || 
+            (c.alias && c.alias.includes(cmdName))
+          );
+          
           if (cmd) {
-            if (cmd.react && mek.key) {
-              try {
-                await malvin.sendMessage(from, { react: { text: cmd.react, key: mek.key }});
-              } catch (err) {
-                console.error("Command react error:", err.message);
-              }
-            }
+            console.log(chalk.green(`[CMD] Executing: ${cmdName}`));
             
             try {
-              await cmd.function(malvin, mek, m, {from, quoted, body, isCmd, command, args, q, text, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply});
-            } catch (e) {
-              console.error("[PLUGIN ERROR] " + e);
+              // Create message object with reply method
+              const messageObj = {
+                from: from,
+                sender: sender,
+                reply: async (text) => {
+                  console.log(chalk.cyan(`[REPLY] ${text.substring(0, 50)}...`));
+                  return await malvin.sendMessage(from, { text }, { quoted: mek });
+                }
+              };
+              
+              // Execute command with correct parameters
+              try {
+                // Pattern 1: (message, client, match)
+                await cmd.function(messageObj, malvin, args);
+              } catch (paramErr) {
+                console.log(chalk.yellow(`[CMD] Trying different parameter order...`));
+                try {
+                  // Pattern 2: (client, mek, m, options)
+                  await cmd.function(malvin, mek, m, {
+                    from, quoted, body, isCmd, command: cmdName, args, q: args, text: args, 
+                    isGroup, sender, senderNumber, botNumber2, botNumber, 
+                    pushname, isMe, isOwner, isCreator, groupMetadata, 
+                    groupName, participants, groupAdmins, isBotAdmins, 
+                    isAdmins, reply: messageObj.reply
+                  });
+                } catch (paramErr2) {
+                  console.error(chalk.red(`[CMD] Parameter error: ${paramErr2.message}`));
+                  await messageObj.reply(`❌ Command error: Parameter mismatch`);
+                }
+              }
+              
+            } catch (execErr) {
+              console.error(chalk.red(`[CMD] Execution error: ${execErr.message}`));
+              console.error(execErr.stack);
+              await malvin.sendMessage(from, { 
+                text: `❌ Error executing command: ${execErr.message}` 
+              }, { quoted: mek });
             }
+            
+          } else {
+            console.log(chalk.yellow(`[CMD] Not found: ${cmdName}`));
+            await malvin.sendMessage(from, { 
+              text: `❌ Command "${cmdName}" not found. Try .ping` 
+            }, { quoted: mek });
+          }
+          
+        } catch (err) {
+          console.error(chalk.red(`[CMD] Handler error: ${err.message}`));
+          console.error(err.stack);
+          
+          // Send error to user
+          try {
+            await malvin.sendMessage(from, { 
+              text: `❌ System error: ${err.message}` 
+            }, { quoted: mek });
+          } catch (sendErr) {
+            console.error('Failed to send error:', sendErr.message);
           }
         }
-        
-        events.commands.map(async(command) => {
-          try {
-            if (body && command.on === "body") {
-              await command.function(malvin, mek, m, {from, l, quoted, body, isCmd, command, args, q, text, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply});
-            } else if (mek.q && command.on === "text") {
-              await command.function(malvin, mek, m, {from, l, quoted, body, isCmd, command, args, q, text, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply});
-            } else if (
-              (command.on === "image" || command.on === "photo") &&
-              mek.type === "imageMessage"
-            ) {
-              await command.function(malvin, mek, m, {from, l, quoted, body, isCmd, command, args, q, text, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply});
-            } else if (
-              command.on === "sticker" &&
-              mek.type === "stickerMessage"
-            ) {
-              await command.function(malvin, mek, m, {from, l, quoted, body, isCmd, command, args, q, text, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply});
-            }
-          } catch (err) {
-            console.error("Command execution error:", err.message);
-          }
-        });
-      } catch (err) {
-        console.error("Error loading commands:", err.message);
       }
+      // ==============================
+      
     } catch (error) {
       console.error("Error in messages.upsert handler:", error.message);
     }
