@@ -228,7 +228,7 @@ async function connectToWA() {
   malvin = makeWASocket({
     logger: P({ level: "silent" }),
     printQRInTerminal: !creds && !pairingCode,
-    browser: Browsers.ubuntu("chrome"),
+    browser: ['macOS', 'Firefox', '120.0'],  // <-- Alternative fix
     syncFullHistory: true,
     auth: state,
     version,
