@@ -1,25 +1,21 @@
-// Create /app/malvin.js with this content:
-const fs = require('fs');
+// In malvin.js
+var commands = [];
 
-module.exports = {
-  commands: [
-    {
-      pattern: 'ping',
-      function: async (malvin, mek, m, { reply }) => {
-        await reply('🏓 Pong!');
-      }
-    },
-    {
-      pattern: 'menu',
-      function: async (malvin, mek, m, { reply }) => {
-        await reply('📋 Bot Menu:\n• .ping - Test bot\n• .menu - Show this menu');
-      }
-    },
-    {
-      pattern: 'test',
-      function: async (malvin, mek, m, { reply }) => {
-        await reply('✅ Bot is working!');
-      }
-    }
-  ]
-};
+function malvin(info, func) {
+    commands.push({...info, function: func});
+}
+
+// Simple commands that match your current structure
+malvin({
+    pattern: 'ping'
+}, async (message, client, match) => {
+    await client.sendMessage(message.from, { text: '🏓 Pong!' }, { quoted: message });
+});
+
+malvin({
+    pattern: 'test'
+}, async (message, client, match) => {
+    await client.sendMessage(message.from, { text: '✅ Working!' }, { quoted: message });
+});
+
+module.exports = { commands };
