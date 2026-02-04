@@ -1,4 +1,3 @@
-and here is the index tell me what is the possible way to fix the line please 
 
 // Anti-crash handler
 process.on("uncaughtException", (err) => {
