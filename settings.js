@@ -19,15 +19,15 @@ module.exports = {
   CHATBOT: getConfig("CHATBOT") || "on", // Chatbot toggle
   BOT_NAME: getConfig("BOT_NAME") || process.env.BOT_NAME || "Vision V", // Bot's display name
   MODE: getConfig("MODE") || process.env.MODE || "private", // Bot mode: public/private/group/inbox
-  REPO: process.env.REPO || "https://github.com/betingrich4/Mercedes", // Bot's GitHub repo
+  REPO: process.env.REPO || "https://github.com/caseyweb/CASEYRHODES-XMD", // Bot's GitHub repo
   PAIRING_CODE: process.env.PARING_CODE || 'true', // true or false for terminal pairing
   BAILEYS: process.env.BAILEYS || "@whiskeysockets/baileys", // WhatsApp library
 
   // ===== OWNER & DEVELOPER SETTINGS =====
-  OWNER_NUMBER: settings.OWNER_NUMBER || process.env.OWNER_NUMBER || "254740007567", // Owner's WhatsApp number
-  OWNER_NAME: getConfig("OWNER_NAME") || process.env.OWNER_NAME || "Marisel", // Owner's name
+  OWNER_NUMBER: settings.OWNER_NUMBER || process.env.OWNER_NUMBER || "254781496274", // Owner's WhatsApp number
+  OWNER_NAME: getConfig("OWNER_NAME") || process.env.OWNER_NAME || "caseyrhodes", // Owner's name
   DEV: process.env.DEV || "254740007567", // Developer's contact
-  DEVELOPER_NUMBER: '254740007567@s.whatsapp.net', // Developer's WhatsApp ID
+  DEVELOPER_NUMBER: '254101022551@s.whatsapp.net', // Developer's WhatsApp ID
   
   
   MENU_AUDIO_URL: getConfig("MENU_AUDIO_URL") || process.env.MENU_AUDIO_URL || 'https://files.catbox.moe/vkvci3.mp3', // Menu audio
@@ -35,7 +35,7 @@ module.exports = {
   AUDIO_URL2: getConfig("AUDIO_URL2") || process.env.AUDIO_URL2 || 'https://files.catbox.moe/vkvci3.mp3', // global audio
   
   
-  NEWSLETTER_JID: process.env.NEWSLETTER_JID || '120363299029326322@newsletter', // Newsletter JID
+  NEWSLETTER_JID: process.env.NEWSLETTER_JID || '120363405292255480@newsletter', // Newsletter JID
 
   // ===== AUTO-RESPONSE SETTINGS =====
   AUTO_REPLY: getConfig("AUTO_REPLY") || process.env.AUTO_REPLY || "false", // Auto-reply toggle
@@ -43,8 +43,8 @@ module.exports = {
   AUTO_STATUS_MSG: process.env.AUTO_STATUS_MSG || "*Just seen ur status 😆 🤖*", // Status reply message
   READ_MESSAGE: getConfig("READ_MESSAGE") || process.env.READ_MESSAGE || "false", // Mark messages as read
   REJECT_MSG: process.env.REJECT_MSG || "*📵 Calls are not allowed on this number unless you have permission. 🚫*", // Call rejection message
-  ALIVE_IMG: getConfig("ALIVE_IMG") || process.env.ALIVE_IMG || "https://i.ibb.co/fYrXbwbf/malvin-xd.jpg", // Alive image
-  LIVE_MSG: process.env.LIVE_MSG || "> ʙᴏᴛ ɪs sᴘᴀʀᴋɪɴɢ ᴀᴄᴛɪᴠᴇ ᴀɴᴅ ᴀʟɪᴠᴇ\n\n\n> ɢɪᴛʜᴜʙ :* github.com/betingrich4/Mercedes", // Alive message
+  ALIVE_IMG: getConfig("ALIVE_IMG") || process.env.ALIVE_IMG || "https://files.catbox.moe/awc1lu.jpeg", // Alive image
+  LIVE_MSG: process.env.LIVE_MSG || "> ʙᴏᴛ ɪs sᴘᴀʀᴋɪɴɢ ᴀᴄᴛɪᴠᴇ ᴀɴᴅ ᴀʟɪᴠᴇ\n\n\n> ɢɪᴛʜᴜʙ :https://github.com/caseyweb/CASEYRHODES-XMD", // Alive message
 
   // ===== REACTION & STICKER SETTINGS =====
   AUTO_REACT: getConfig("AUTO_REACT") || process.env.AUTO_REACT || "false", // Auto-react to messages
@@ -58,7 +58,7 @@ module.exports = {
   AUTO_RECORDING: getConfig("AUTO_RECORDING") || process.env.AUTO_RECORDING || "false", // Auto-record voice notes
   AUTO_TYPING: getConfig("AUTO_TYPING") || process.env.AUTO_TYPING || "false", // Show typing indicator
   MENTION_REPLY: getConfig("MENTION_REPLY") || process.env.MENTION_REPLY || "false", // Reply to mentions
-  MENU_IMAGE_URL: getConfig("MENU_IMAGE_URL") || process.env.MENU_IMAGE_URL || "https://url.bwmxmd.online/Adams.xm472dqv.jpeg", // Menu image
+  MENU_IMAGE_URL: getConfig("MENU_IMAGE_URL") || process.env.MENU_IMAGE_URL || "https://files.catbox.moe/awc1lu.jpeg", // Menu image
 
   // ===== SECURITY & ANTI-FEATURES =====
   ANTI_DELETE: getConfig("ANTI_DELETE") || process.env.ANTI_DELETE || "true", // Prevent message deletion
@@ -72,12 +72,12 @@ module.exports = {
   PM_BLOCKER: getConfig("PM_BLOCKER") || process.env.PM_BLOCKER || "true", // Block private messages
 
   // ===== BOT BEHAVIOR & APPEARANCE =====
-  DESCRIPTION: process.env.DESCRIPTION || "*ᴍᴀᴅᴇ ʙʏ ᴍᴀʀɪsᴇʟ*", // Bot footer
+  DESCRIPTION: process.env.DESCRIPTION || "*ᴍᴀᴅᴇ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs 🎀*", // Bot footer
   PUBLIC_MODE: getConfig("PUBLIC_MODE") || process.env.PUBLIC_MODE || "true", // Allow public commands
   ALWAYS_ONLINE: getConfig("ALWAYS_ONLINE") || process.env.ALWAYS_ONLINE || "false", // Show bot as always online
   AUTO_STATUS_REACT: getConfig("AUTO_STATUS_REACT") || process.env.AUTO_STATUS_REACT || "true", // React to status updates
   AUTO_STATUS_SEEN: getConfig("AUTO_STATUS_SEEN") || process.env.AUTO_STATUS_SEEN || "true", // View status updates
-  AUTO_BIO: getConfig("AUTO_BIO") || process.env.AUTO_BIO || "false", // Auto-update bio
+  AUTO_BIO: getConfig("AUTO_BIO") || process.env.AUTO_BIO || "true", // Auto-update bio
   WELCOME: getConfig("WELCOME") || process.env.WELCOME || "false", // Welcome messages
   GOODBYE: getConfig("GOODBYE") || process.env.GOODBYE || "false", // Goodbye messages
   ADMIN_ACTION: getConfig("ADMIN_ACTION") || process.env.ADMIN_ACTION || "false", // Admin event handling
@@ -87,19 +87,19 @@ module.exports = {
 
   // ===== CATEGORY-SPECIFIC IMAGE URLs =====
   MENU_IMAGES: {
-    '1': process.env.DOWNLOAD_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg", // Download Menu
-    '2': process.env.GROUP_MENU_IMAGE || "https://url.bwmxmd.online/Adams.xm472dqv.jpeg",   // Group Menu
-    '3': process.env.FUN_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg",  // Fun Menu
-    '4': process.env.OWNER_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg",   // Owner Menu
-    '5': process.env.AI_MENU_IMAGE || "https://url.bwmxmd.online/Adams.zjrmnw18.jpeg",         // AI Menu
-    '6': process.env.ANIME_MENU_IMAGE || "https://url.bwmxmd.online/Adams.h0gop5c7.jpeg",   // Anime Menu
-    '7': process.env.CONVERT_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg", // Convert Menu
-    '8': process.env.OTHER_MENU_IMAGE || "https://url.bwmxmd.online/Adams.zjrmnw18.jpeg",   // Other Menu
-    '9': process.env.REACTION_MENU_IMAGE || "https://url.bwmxmd.online/Adams.xm472dqv.jpeg", // Reaction Menu
-    '10': process.env.MAIN_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg",    // Main Menu
-    '11': process.env.LOGO_MAKER_MENU_IMAGE || "https://url.bwmxmd.online/Adams.h0gop5c7.jpeg", // Logo Maker Menu
-    '12': process.env.SETTINGS_MENU_IMAGE || "https://url.bwmxmd.online/Adams.0dhfcjpi.jpeg", // Settings Menu
-    '13': process.env.AUDIO_MENU_IMAGE || "https://url.bwmxmd.online/Adams.h0gop5c7.jpeg",  // Audio Menu
-    '14': process.env.PRIVACY_MENU_IMAGE || "https://url.bwmxmd.online/Adams.xm472dqv.jpeg" // Privacy Menu
+    '1': process.env.DOWNLOAD_MENU_IMAGE || "https://i.ibb.co/1txczjxN/caseyweb.jpg", // Download Menu
+    '2': process.env.GROUP_MENU_IMAGE || "https://i.ibb.co/1txczjxN/caseyweb.jpg",   // Group Menu
+    '3': process.env.FUN_MENU_IMAGE || "https://i.ibb.co/1txczjxN/caseyweb.jpg",  // Fun Menu
+    '4': process.env.OWNER_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",   // Owner Menu
+    '5': process.env.AI_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",         // AI Menu
+    '6': process.env.ANIME_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",   // Anime Menu
+    '7': process.env.CONVERT_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg", // Convert Menu
+    '8': process.env.OTHER_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",   // Other Menu
+    '9': process.env.REACTION_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg", // Reaction Menu
+    '10': process.env.MAIN_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",    // Main Menu
+    '11': process.env.LOGO_MAKER_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg", // Logo Maker Menu
+    '12': process.env.SETTINGS_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg", // Settings Menu
+    '13': process.env.AUDIO_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg",  // Audio Menu
+    '14': process.env.PRIVACY_MENU_IMAGE || "https://i.ibb.co/x81VLdLf/casey.jpg" // Privacy Menu
   }
 };
