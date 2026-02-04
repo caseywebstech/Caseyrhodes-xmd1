@@ -1,21 +1,22 @@
-// In malvin.js
+// malvin.js - Just the registry, no commands
 var commands = [];
 
 function malvin(info, func) {
-    commands.push({...info, function: func});
+    var data = info;
+    data.function = func;
+    if (!data.dontAddCommandList) data.dontAddCommandList = false;
+    if (!info.desc) info.desc = '';
+    if (!data.fromMe) data.fromMe = false;
+    if (!info.category) data.category = 'misc';
+    if(!info.filename) data.filename = "Not Provided";
+    commands.push(data);
+    return data;
 }
 
-// Simple commands that match your current structure
-malvin({
-    pattern: 'ping'
-}, async (message, client, match) => {
-    await client.sendMessage(message.from, { text: '🏓 Pong!' }, { quoted: message });
-});
-
-malvin({
-    pattern: 'test'
-}, async (message, client, match) => {
-    await client.sendMessage(message.from, { text: '✅ Working!' }, { quoted: message });
-});
-
-module.exports = { commands };
+module.exports = {
+    malvin,
+    AddCommand: malvin,
+    Function: malvin,
+    Module: malvin,
+    commands,
+};
