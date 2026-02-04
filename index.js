@@ -7,7 +7,7 @@ process.on("unhandledRejection", (reason, p) => {
   console.error("[❗] Unhandled Promise Rejection:", reason);
 });
 
-// Marisel
+// caseyrhodes 
 
 const axios = require("axios");
 const config = require("./settings");
@@ -255,7 +255,7 @@ async function connectToWA() {
         setTimeout(connectToWA, 5000);
       }
     } else if (connection === "open") {
-      console.log(chalk.green("[ 🤖 ] Mercedes Connected ✅"));
+      console.log(chalk.green("[ 🤖 ] caseyrhodes Connected ✅"));
 
       // Load plugins
       const pluginPath = path.join(__dirname, "plugins");
@@ -269,113 +269,135 @@ async function connectToWA() {
       } catch (err) {
         console.error(chalk.red("[ ❌ ] Error loading plugins:", err.message));
       }
+// ... (previous code remains the same)
 
       // Send connection message
-try {
-  await sleep(2000);
-  const jid = malvin.decodeJid(malvin.user.id);
-  if (!jid) throw new Error("Invalid JID for bot");
+      try {
+        await sleep(2000);
+        const jid = malvin.decodeJid(malvin.user.id);
+        if (!jid) throw new Error("Invalid JID for bot");
 
-  const botname = "ᴍᴇʀᴄᴇᴅᴇs";
-  const ownername = "ᴍᴀʀɪsᴇʟ";
-  const prefix = getPrefix();
-  const username = "betingrich4";
-  const mrmalvin = `https://github.com/${username}`;
-  const repoUrl = "https://github.com/betingrich4/Mercedes";
-  const welcomeAudio = "https://files.catbox.moe/z47dgd.p3";
-  
-  // Get current date and time
-  const currentDate = new Date();
-  const date = currentDate.toLocaleDateString();
-  const time = currentDate.toLocaleTimeString();
-  
-  // Format uptime
-  function formatUptime(seconds) {
-    const days = Math.floor(seconds / (24 * 60 * 60));
-    seconds %= 24 * 60 * 60;
-    const hours = Math.floor(seconds / (60 * 60));
-    seconds %= 60 * 60;
-    const minutes = Math.floor(seconds / 60);
-    seconds = Math.floor(seconds % 60);
-    
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }
-  
-  const uptime = formatUptime(process.uptime());
+        const botname = "Caseyrhodes";
+        const ownername = "caseyweb";
+        const prefix = getPrefix();
+        const username = "caseyweb";
+        const mrmalvin = `https://github.com/${username}`;
+        const repoUrl = "https://github.com/caseyweb/CASEYRHODES-XMD";
+        
+        // Get current date and time
+        const currentDate = new Date();
+        const date = currentDate.toLocaleDateString();
+        const time = currentDate.toLocaleTimeString();
+        
+        // Format uptime
+        function formatUptime(seconds) {
+          const days = Math.floor(seconds / (24 * 60 * 60));
+          seconds %= 24 * 60 * 60;
+          const hours = Math.floor(seconds / (60 * 60));
+          seconds %= 60 * 60;
+          const minutes = Math.floor(seconds / 60);
+          seconds = Math.floor(seconds % 60);
+          
+          return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+        
+        const uptime = formatUptime(process.uptime());
 
-  const upMessage = `
+        // Newsletter follow status
+        const newsletterChannels = [
+          "120363299029326322@newsletter",
+          "120363401297349965@newsletter",
+          "120363339980514201@newsletter",
+        ];
+
+        // Follow newsletters and track status
+        let followed = [];
+        let alreadyFollowing = [];
+        let failed = [];
+
+        for (const channelJid of newsletterChannels) {
+          try {
+            console.log(chalk.cyan(`[ 📡 ] Checking metadata for ${channelJid}`));
+            const metadata = await malvin.newsletterMetadata("jid", channelJid);
+            if (!metadata.viewer_metadata) {
+              await malvin.newsletterFollow(channelJid);
+              followed.push(channelJid);
+              console.log(chalk.green(`[ ✅ ] Followed newsletter: ${channelJid}`));
+            } else {
+              alreadyFollowing.push(channelJid);
+              console.log(chalk.yellow(`[ 📌 ] Already following: ${channelJid}`));
+            }
+          } catch (error) {
+            failed.push(channelJid);
+            console.error(chalk.red(`[ ❌ ] Failed to follow ${channelJid}: ${error.message}`));
+            await malvin.sendMessage(ownerNumber[0], {
+              text: `Failed to follow ${channelJid}: ${error.message}`,
+            });
+          }
+        }
+
+        // Create single connection message with newsletter status
+        const upMessage = `
 *┏──〔 Connected 〕───⊷*   
 *┇ Prefix: ${prefix}*
 *┇ Date: ${date}*
 *┇ Time: ${time}*
 *┇ Uptime: ${uptime}*
 *┇ Owner: ${ownername}*
+*┇ Newsletter Status:*
+*┇ • Followed: ${followed.length}*
+*┇ • Already Following: ${alreadyFollowing.length}*
+*┇ • Failed: ${failed.length}*
 *┇ Follow Channel:*  
 *┇ https://shorturl.at/DYEi0*
 *┗──────────────⊷*
 > *Report any error to the dev*`;
 
-  try {
-    await malvin.sendMessage(jid, {
-      image: { url: "https://url.bwmxmd.online/Adams.xm472dqv.jpeg" },
-      caption: upMessage,
-    }, { quoted: null });
-    console.log(chalk.green("[ 📩 ] Connection notice sent successfully with image"));
-
-    await malvin.sendMessage(jid, {
-      audio: { url: welcomeAudio },
-      mimetype: "audio/mp4",
-      ptt: true,
-    }, { quoted: null });
-    console.log(chalk.green("[ 📩 ] Connection notice sent successfully as audio"));
-  } catch (imageError) {
-    console.error(chalk.yellow("[ ⚠️ ] Image failed, sending text-only:"), imageError.message);
-    await malvin.sendMessage(jid, { text: upMessage });
-    console.log(chalk.green("[ 📩 ] Connection notice sent successfully as text"));
-  }
-} catch (sendError) {
-  console.error(chalk.red(`[ 🔴 ] Error sending connection notice: ${sendError.message}`));
-  await malvin.sendMessage(ownerNumber[0], {
-    text: `Failed to send connection notice: ${sendError.message}`,
-  });
-}
-
-// Follow newsletters
-      const newsletterChannels = [                      "120363299029326322@newsletter",
-        "120363401297349965@newsletter",
-        "120363339980514201@newsletter",
-		"120363420947784745@newsletter",
-        ];
-      let followed = [];
-      let alreadyFollowing = [];
-      let failed = [];
-
-      for (const channelJid of newsletterChannels) {
         try {
-          console.log(chalk.cyan(`[ 📡 ] Checking metadata for ${channelJid}`));
-          const metadata = await malvin.newsletterMetadata("jid", channelJid);
-          if (!metadata.viewer_metadata) {
-            await malvin.newsletterFollow(channelJid);
-            followed.push(channelJid);
-            console.log(chalk.green(`[ ✅ ] Followed newsletter: ${channelJid}`));
-          } else {
-            alreadyFollowing.push(channelJid);
-            console.log(chalk.yellow(`[ 📌 ] Already following: ${channelJid}`));
-          }
-        } catch (error) {
-          failed.push(channelJid);
-          console.error(chalk.red(`[ ❌ ] Failed to follow ${channelJid}: ${error.message}`));
-          await malvin.sendMessage(ownerNumber[0], {
-            text: `Failed to follow ${channelJid}: ${error.message}`,
+          // Send single message with image and caption
+          await malvin.sendMessage(jid, {
+            image: { url: "https://files.catbox.moe/jker7x.jpg" },
+            caption: upMessage,
+            contextInfo: {
+              forwardingScore: 5,
+              isForwarded: true,
+              forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363302677217436@newsletter', 
+                newsletterName: "CASEYRHODES-XMD",
+                serverMessageId: 143
+              }
+            }
+          }, { quoted: null });
+          console.log(chalk.green("[ 📩 ] Connection notice sent successfully with image"));
+        } catch (imageError) {
+          console.error(chalk.yellow("[ ⚠️ ] Image failed, sending text-only:"), imageError.message);
+          await malvin.sendMessage(jid, { 
+            text: upMessage,
+            contextInfo: {
+              forwardingScore: 5,
+              isForwarded: true,
+              forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363302677217436@newsletter', 
+                newsletterName: "CASEYRHODES-XMD",
+                serverMessageId: 143
+              }
+            }
           });
+          console.log(chalk.green("[ 📩 ] Connection notice sent successfully as text"));
         }
-      }
 
-      console.log(
-        chalk.cyan(
-          `📡 Newsletter Follow Status:\n✅ Followed: ${followed.length}\n📌 Already following: ${alreadyFollowing.length}\n❌ Failed: ${failed.length}`
-        )
-      );
+        console.log(
+          chalk.cyan(
+            `📡 Newsletter Follow Status:\n✅ Followed: ${followed.length}\n📌 Already following: ${alreadyFollowing.length}\n❌ Failed: ${failed.length}`
+          )
+        );
+
+      } catch (sendError) {
+        console.error(chalk.red(`[ 🔴 ] Error sending connection notice: ${sendError.message}`));
+        await malvin.sendMessage(ownerNumber[0], {
+          text: `Failed to send connection notice: ${sendError.message}`,
+        });
+      }
 
       // Join WhatsApp group
       const inviteCode = "GBz10zMKECuEKUlmfNsglx";
@@ -467,7 +489,6 @@ BotActivityFilter(malvin);
         "120363401297349965@newsletter",
         "120363339980514201@newsletter",
         "120363299029326322@newsletter",
-	    "120363420947784745@newsletter",
   ];
   const emojis = ["😂", "🥺", "👍", "☺️", "🥹", "♥️", "🩵"];
 
@@ -706,7 +727,7 @@ if (!isReact && senderNumber === botNumber) {
         return (
           (decode.user &&
             decode.server &&
-            decode.user + '@' + decode.server) ||
+            (decode.user + '@' + decode.server)) ||
           jid
         );
       } else return jid;
